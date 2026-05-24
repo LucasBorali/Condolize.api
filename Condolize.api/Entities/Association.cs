@@ -1,8 +1,11 @@
-﻿namespace Condolize.api.Entities
+﻿using Condolize.api.Entities.Common;
+
+namespace Condolize.api.Entities
 {
-    public class Association
+    public class Association : BaseEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
+
+        public ICollection<User> Users { get; set; } = [];
     }
 }

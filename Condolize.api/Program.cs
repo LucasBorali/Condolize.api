@@ -1,4 +1,5 @@
 using Condolize.api.Data;
+using Condolize.api.Services;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -15,6 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<PasswordService>();
 
 var app = builder.Build();
 

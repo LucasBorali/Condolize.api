@@ -11,6 +11,7 @@ namespace Condolize.api.Data
         }
 
         public DbSet<Association> Associations => Set<Association>();
+        public DbSet<User> Users => Set<User>();
 
     }
 }
