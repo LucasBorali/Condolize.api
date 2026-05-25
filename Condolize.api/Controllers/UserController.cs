@@ -4,12 +4,14 @@ using Condolize.api.Data;
 using Condolize.api.Services;
 using Condolize.api.Entities;
 using Condolize.api.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Condolize.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly AppDbContext _context;

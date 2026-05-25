@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Condolize.api.Services;
 using Condolize.api.DTOs;
+using Condolize.api.Services;
 
 namespace Condolize.api.Controllers
 {
@@ -12,11 +13,13 @@ namespace Condolize.api.Controllers
     {
         private readonly AppDbContext _context;
         private readonly PasswordService _passwordService;
+        private readonly TokenService _tokenService;
 
-        public AuthController(AppDbContext context, PasswordService passwordService)
+        public AuthController(AppDbContext context, PasswordService passwordService, TokenService tokenService)
         {
             _context = context;
             _passwordService = passwordService;
+            _tokenService = tokenService;
         }
 
         [HttpPost]
@@ -34,7 +37,9 @@ namespace Condolize.api.Controllers
             if (!passwordValid)
                 return Unauthorized("Usuário ou senha inválidos.");
 
-            return Ok("Login bem-sucedido");
+            var token = _tokenService.GenerateToken(user);
+
+            return Ok(new { token});
 
 
         }
