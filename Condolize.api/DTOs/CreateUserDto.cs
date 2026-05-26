@@ -12,6 +12,5 @@ namespace Condolize.api.DTOs
 
         public UserRole Role { get; set; }
 
-        public Guid AssociationId { get; set; }
     }
 }

@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Condolize.api.Auth;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -75,6 +77,10 @@ builder.Services
                     Encoding.UTF8.GetBytes(jwtKey!))
             };
     });
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<CurrentUserService>();
 
 var app = builder.Build();
 

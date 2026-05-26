@@ -1,9 +1,12 @@
-﻿using Condolize.api.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Condolize.api.Services;
+﻿using Condolize.api.Auth;
+using Condolize.api.Data;
 using Condolize.api.DTOs;
 using Condolize.api.Services;
+using Condolize.api.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
 
 namespace Condolize.api.Controllers
 {
@@ -14,12 +17,14 @@ namespace Condolize.api.Controllers
         private readonly AppDbContext _context;
         private readonly PasswordService _passwordService;
         private readonly TokenService _tokenService;
+        private readonly CurrentUserService _currentUserService;
 
-        public AuthController(AppDbContext context, PasswordService passwordService, TokenService tokenService)
+        public AuthController(AppDbContext context, PasswordService passwordService, TokenService tokenService, CurrentUserService currentUserService)
         {
             _context = context;
             _passwordService = passwordService;
             _tokenService = tokenService;
+            _currentUserService = currentUserService;
         }
 
         [HttpPost]
@@ -39,12 +44,28 @@ namespace Condolize.api.Controllers
 
             var token = _tokenService.GenerateToken(user);
 
-            return Ok(new { token});
+            return Ok(new { token });
 
 
         }
-        
 
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            var currentUser = _currentUserService.GetUser();
+
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            var dto = new MeDto
+            {
+                UserId = currentUser.UserId,
+                Email = email!,
+                Role = currentUser.Role,
+                AssociationId = currentUser.AssociationId
+            };
+
+            return Ok(dto);
+        }
 
     }
 }
