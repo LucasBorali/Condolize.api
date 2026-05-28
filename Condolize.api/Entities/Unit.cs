@@ -9,5 +9,7 @@ namespace Condolize.api.Entities
         public Guid AssociationId { get; set; }
 
         public Association Association { get; set; } = null!;
+
+        public ICollection<Resident> Residents { get; set; } = [];
     }
 }

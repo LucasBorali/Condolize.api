@@ -1,10 +1,12 @@
 ﻿using Condolize.api.Auth;
 using Condolize.api.Data;
 using Condolize.api.DTOs;
+using Condolize.api.Entities;
 using Condolize.api.Services;
 using Condolize.api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 
@@ -65,6 +67,48 @@ namespace Condolize.api.Controllers
             };
 
             return Ok(dto);
+        }
+
+
+        [HttpPost("register-association")]
+        public async Task<IActionResult> RegisterAssociation(
+    RegisterAssociationDto dto)
+        {
+            var emailExists = await _context.Users
+                .AnyAsync(x => x.Email == dto.Email);
+
+            if (emailExists)
+                return BadRequest("Email já cadastrado.");
+
+            var association = new Association
+            {
+                Name = dto.AssociationName
+            };
+
+            await _context.Associations.AddAsync(association);
+
+            var passwordHash = _passwordService
+                .HashPassword(dto.Password);
+
+            var adminUser = new User
+            {
+                Name = dto.AdminName,
+                Email = dto.Email,
+                PasswordHash = passwordHash,
+                Role = Enum.UserRole.Admin,
+                AssociationId = association.Id
+            };
+
+            await _context.Users.AddAsync(adminUser);
+
+            await _context.SaveChangesAsync();
+
+            var token = _tokenService.GenerateToken(adminUser);
+
+            return Ok(new
+            {
+                token
+            });
         }
 
     }

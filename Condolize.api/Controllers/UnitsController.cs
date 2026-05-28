@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Condolize.api.Data;
+using Condolize.api.DTOs;
+using Condolize.api.Entities;
+using Condolize.api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Condolize.api.Data;
-using Condolize.api.Services;
-using Condolize.api.Entities;
-using Condolize.api.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace Condolize.api.Controllers
 {
@@ -37,10 +38,31 @@ namespace Condolize.api.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
             var currentUser = _currentUserService.GetUser();
-            var units = _context.Units.Where(u => u.AssociationId == currentUser.AssociationId).ToList();
+
+            var units = await _context.Units
+                .Include(x => x.Residents)
+                .ThenInclude(x => x.User)
+                .Where(x => x.AssociationId == currentUser.AssociationId)
+                .Select(x => new UnitDto
+                {
+                    Id = x.Id,
+                    Identifier = x.Identifier,
+
+                    Residents = x.Residents
+                        .Select(r => new ResidentDto
+                        {
+                            UserId = r.User.Id,
+                            Name = r.User.Name,
+                            Email = r.User.Email
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
+
             return Ok(units);
         }
     }
