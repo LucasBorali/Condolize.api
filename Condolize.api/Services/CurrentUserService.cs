@@ -26,6 +26,8 @@ namespace Condolize.api.Services
 
                 AssociationId = Guid.Parse(
                 user.FindFirstValue("associationId")!),
+                
+                Name = user.FindFirstValue(ClaimTypes.Name)!,
 
                 Role = user.FindFirstValue(ClaimTypes.Role)!
             }; 

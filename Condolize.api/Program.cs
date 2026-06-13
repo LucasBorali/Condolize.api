@@ -11,6 +11,17 @@ using Condolize.api.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactPolicy", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -92,10 +103,13 @@ if (app.Environment.IsDevelopment())
 
     app.UseSwaggerUI();
 }
+app.UseCors("ReactPolicy");
 
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+
 
 app.MapControllers();
 

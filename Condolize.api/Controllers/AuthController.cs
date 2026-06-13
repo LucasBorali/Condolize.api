@@ -62,6 +62,7 @@ namespace Condolize.api.Controllers
             {
                 UserId = currentUser.UserId,
                 Email = email!,
+                Name = currentUser.Name,
                 Role = currentUser.Role,
                 AssociationId = currentUser.AssociationId
             };

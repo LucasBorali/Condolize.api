@@ -6,6 +6,10 @@
 
         public Guid AssociationId { get; set; }
 
+        public string Name { get; set; }
+
         public string Role { get; set; } = string.Empty;
+
+
     }
 }
