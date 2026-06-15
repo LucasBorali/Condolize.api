@@ -7,5 +7,7 @@
         public string Identifier { get; set; } = string.Empty;
 
         public List<ResidentDto> Residents { get; set; } = [];
+
+        public int ResidentCount { get; set; }
     }
 }

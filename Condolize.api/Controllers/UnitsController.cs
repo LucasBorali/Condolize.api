@@ -37,20 +37,19 @@ namespace Condolize.api.Controllers
             return Ok(unit);
         }
 
-        [HttpGet]
+     
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             var currentUser = _currentUserService.GetUser();
 
             var units = await _context.Units
-                .Include(x => x.Residents)
-                .ThenInclude(x => x.User)
                 .Where(x => x.AssociationId == currentUser.AssociationId)
                 .Select(x => new UnitDto
                 {
                     Id = x.Id,
                     Identifier = x.Identifier,
+                    ResidentCount = x.Residents.Count(),
 
                     Residents = x.Residents
                         .Select(r => new ResidentDto
