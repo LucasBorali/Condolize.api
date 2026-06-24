@@ -37,6 +37,17 @@ namespace Condolize.api.Controllers
             if (user is null)
                 return BadRequest("Usuário não encontrado.");
 
+            var residentExists = await _context.Residents
+    .AnyAsync(x =>
+        x.UserId == dto.UserId &&
+        x.UnitId == dto.UnitId);
+
+            if (residentExists)
+            {
+                return BadRequest(
+                    "Morador já vinculado a esta unidade.");
+            }
+
             var unit = await _context.Units
            .FirstOrDefaultAsync(x =>
                x.Id == dto.UnitId &&
@@ -56,6 +67,24 @@ namespace Condolize.api.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(resident);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            var currentUser = _currentUserService.GetUser();
+            
+            var residents = await _context.Residents
+                .Where(x => x.User.AssociationId == currentUser.AssociationId).Select(x => new ResidentListDto
+                {
+                    UserId = x.UserId,
+                    UserName = x.User.Name,
+                    UnitId = x.UnitId,
+                    UnitIdentifier = x.Unit.Identifier
+                }).ToListAsync();
+
+            return Ok(residents);
+
         }
     }
 }

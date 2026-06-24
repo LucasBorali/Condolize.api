@@ -29,8 +29,16 @@ namespace Condolize.api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserDto dto)
         {
+
+            var emailExists = await _context.Users
+    .AnyAsync(x => x.Email == dto.Email);
+
+            if (emailExists)
+                return BadRequest("Email já cadastrado.");
+
             var passwordHash = _passwordService.HashPassword(dto.Password);
             var currentUser = _currentUserService.GetUser();
+
 
             var user = new User
            {
