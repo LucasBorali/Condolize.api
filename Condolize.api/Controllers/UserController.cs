@@ -71,5 +71,64 @@ namespace Condolize.api.Controllers
 
             return Ok(users);
         }
+
+        [HttpPut("id")]
+        public async Task<IActionResult> Update(Guid id,UpdateUserDto dto)
+        {
+            var currentUser = _currentUserService.GetUser();
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id && x.AssociationId == currentUser.AssociationId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var emailExists = await _context.Users.AnyAsync(x => x.Email == dto.Email && x.Id != id);
+
+            if (emailExists)
+            {
+                return BadRequest("Email já cadastrado");
+            }
+
+            user.Name = dto.Name;
+            user.Email = dto.Email;
+            user.Role = dto.Role;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new UserDto{
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = user.Role.ToString()
+
+            });
+        }
+
+        [HttpDelete("id")]
+        public async Task<IActionResult> Delete (Guid id)
+        {
+            var currentUser = _currentUserService.GetUser();
+
+            var user = await _context.Users.Include(x => x.Residents)
+                .FirstOrDefaultAsync(x => x.Id == id && x.AssociationId == currentUser.AssociationId);
+
+            if (user == null) { return NotFound(); }
+
+            if (user.Residents.Any())
+            {
+                return BadRequest("Usuário possui vínculo com uma unidade");
+            }
+
+            _context.Users.Remove(user);
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+
+
+        }
+
     }
 }

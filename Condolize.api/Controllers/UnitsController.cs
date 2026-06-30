@@ -64,5 +64,13 @@ namespace Condolize.api.Controllers
 
             return Ok(units);
         }
+
+        //[HttpDelete]
+        //public async Task<IActionResult> Delete(int id)
+        //{
+        //    var currentUnit = _currentUserService.GetUser();
+
+
+        //}
     }
 }
