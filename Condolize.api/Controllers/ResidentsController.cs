@@ -77,6 +77,7 @@ namespace Condolize.api.Controllers
             var residents = await _context.Residents
                 .Where(x => x.User.AssociationId == currentUser.AssociationId).Select(x => new ResidentListDto
                 {
+                    Id = x.Id,
                     UserId = x.UserId,
                     UserName = x.User.Name,
                     UnitId = x.UnitId,
@@ -85,6 +86,25 @@ namespace Condolize.api.Controllers
 
             return Ok(residents);
 
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var currentUser = _currentUserService.GetUser();
+            var resident = await _context.Residents
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(x =>
+                    x.User.AssociationId == currentUser.AssociationId &&
+                    x.Id == id);
+
+
+            if (resident is null)
+                return NotFound("Morador não encontrado.");
+
+            _context.Residents.Remove(resident);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
     }
 }

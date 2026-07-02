@@ -65,12 +65,42 @@ namespace Condolize.api.Controllers
             return Ok(units);
         }
 
-        //[HttpDelete]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    var currentUnit = _currentUserService.GetUser();
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, UpdateUnitDto dto)
+        {
+            var currentUser = _currentUserService.GetUser();
+            var unit = await _context.Units
+                .FirstOrDefaultAsync(x => x.Id == id && x.AssociationId == currentUser.AssociationId);
+            if (unit == null)
+                return NotFound("Unidade não encontrada.");
+
+            unit.Identifier = dto.Identifier;
+            await _context.SaveChangesAsync();
+            return Ok(new UnitDto
+            {
+                Id = unit.Id,
+                Identifier= unit.Identifier,
+            });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var currentUser = _currentUserService.GetUser();
+            var unit = await _context.Units
+                .FirstOrDefaultAsync(x => x.Id == id && x.AssociationId == currentUser.AssociationId);
+            if (unit == null)
+                return NotFound("Unidade não encontrada.");
+            if(unit.Residents.Any())
+                return BadRequest("Não é possível deletar uma unidade que possui moradores.");
+
+            _context.Units.Remove(unit);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
 
 
-        //}
+
+
     }
 }
