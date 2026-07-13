@@ -1,10 +1,9 @@
-﻿using Condolize.api.Auth;
+﻿
 using Condolize.api.Data;
 using Condolize.api.DTOs;
 using Condolize.api.Entities;
 using Condolize.api.Services;
-using Condolize.api.Services;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;

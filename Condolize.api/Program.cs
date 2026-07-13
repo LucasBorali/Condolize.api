@@ -1,12 +1,13 @@
+using Condolize.api.Auth;
 using Condolize.api.Data;
+using Condolize.api.Entities;
 using Condolize.api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Condolize.api.Auth;
-
+using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -92,6 +93,7 @@ builder.Services
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<CurrentUserService>();
+
 
 var app = builder.Build();
 

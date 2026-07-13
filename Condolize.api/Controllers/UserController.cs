@@ -72,7 +72,7 @@ namespace Condolize.api.Controllers
             return Ok(users);
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id,UpdateUserDto dto)
         {
             var currentUser = _currentUserService.GetUser();
@@ -106,7 +106,7 @@ namespace Condolize.api.Controllers
             });
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete (Guid id)
         {
             var currentUser = _currentUserService.GetUser();
