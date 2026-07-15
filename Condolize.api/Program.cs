@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -59,9 +60,18 @@ builder.Services.AddSwaggerGen(options =>
         });
 });
 
+var dataSourceBuilder =
+    new NpgsqlDataSourceBuilder(
+        builder.Configuration.GetConnectionString("DefaultConnection"));
+
+dataSourceBuilder.EnableDynamicJson();
+
+var dataSource = dataSourceBuilder.Build();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+{
+    options.UseNpgsql(dataSource);
+});
 
 builder.Services.AddScoped<PasswordService>();
 

@@ -15,6 +15,8 @@ namespace Condolize.api.Data
         public DbSet<Unit> Units => Set<Unit>();
         public DbSet<Resident> Residents => Set<Resident>();
         public DbSet<PublicSpace> PublicSpaces => Set<PublicSpace>();
+        public DbSet<Reservation> Reservations => Set<Reservation>();
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

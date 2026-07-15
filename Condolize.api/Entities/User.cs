@@ -18,5 +18,9 @@ namespace Condolize.api.Entities
         public Association Association { get; set; } = null!;
 
         public ICollection<Resident> Residents { get; set; } = [];
+
+        public ICollection<Reservation> Reservations { get; set; } = [];
+
+
     }
 }
